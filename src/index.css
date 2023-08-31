@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@import url(./blocks/app/app.css);
+
+@import url(./blocks/form/form.css);
+@import url(./blocks/form/form__input/form__input.css);
+
+@import url(./blocks/header/header.css);

@@ -9,9 +9,6 @@ const SelectPlatform = ({handleChange}) => {
   return (
     <Select
       allowClear="true"
-      style={{
-        width: '30%',
-      }}
       placeholder="select platform"
       onChange={handleChange}
       optionLabelProp="label"

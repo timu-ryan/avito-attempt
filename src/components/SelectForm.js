@@ -11,7 +11,6 @@ const SelectForm = ({ onSearch }) => {
     category: '',
     sorting: ''
   })
-  // const navigate = useNavigate();
   
   const handleCategoryChange = (value) => {
     setFormValue({
@@ -40,12 +39,12 @@ const SelectForm = ({ onSearch }) => {
   }
 
   return (
-    <>
-      <SelectPlatform handleChange={handlePlatformChange} />
-      <SelectCategory handleChange={handleCategoryChange} />
-      <SelectSorting handleChange={handleSortingChange} />
-      <Button type='primary' onClick={handleSubmit}>search</Button>
-    </>
+    <section className='form'>
+      <SelectPlatform handleChange={handlePlatformChange} className="form__input"/>
+      <SelectCategory handleChange={handleCategoryChange} className="form__input"/>
+      <SelectSorting handleChange={handleSortingChange} className="form__input"/>
+      <Button type='primary' onClick={handleSubmit} className='form__button'>search</Button>
+    </section>
     
   )
 }

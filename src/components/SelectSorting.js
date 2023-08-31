@@ -8,9 +8,9 @@ const SelectSorting = ({handleChange}) => {
   return (
     <Select
       // mode="multiple"
-      style={{
-        width: '30%',
-      }}
+      // style={{
+      //   width: '30%',
+      // }}
       placeholder="choose how to sort"
       // defaultValue={['china']}
       onChange={handleChange}

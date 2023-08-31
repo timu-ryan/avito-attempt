@@ -1,11 +1,10 @@
 import React from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import api from '../api';
-import { Button } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from '@ant-design/icons';
-import { Image } from 'antd';
 import { useState, useEffect } from 'react';
-import { Spin } from 'antd';
+import { Spin, Modal, Image, Button } from 'antd';
+import api from '../utils/api';
+
 
 const GamePage = () => {
   const { id } = useParams();
@@ -21,32 +20,47 @@ const GamePage = () => {
   })
   const [isLoading, setIsLoading] = useState(false)
 
-  // api.getSpecificGame(id)
-  //   .then(res => setCurrentGame(res))
-  //   .catch(err => console.log(err))
+  const setToLocalStorage = (item) => {
+    localStorage.setItem(item.id, JSON.stringify(item));
+    setTimeout(() => {
+      localStorage.removeItem(item.id);
+    }, 300000);
+  }
+
   useEffect(() => {
     setIsLoading(true)
-    api.getSpecificGame(id)
-      .then(res => {
-        setCurrentGame(res)
-        return res;
-      })
-      .catch(err => console.log(err))
-      .finally(res => setIsLoading(false))
+    if(localStorage.getItem(id)) {
+      setCurrentGame(JSON.parse(localStorage.getItem(id)));
+      setIsLoading(false)
+    } else {
+      api.getSpecificGame(id)
+        .then(res => {
+          setCurrentGame(res);
+          setToLocalStorage(res);
+          return res;
+        })
+        .catch(err => {
+          console.log(err);
+          setIsModalOpen(true);
+        })
+        .finally(res => setIsLoading(false))
+    }
   }, []);
 
   const handleBackClick = () => {
     navigate('/')
   }
-  // название
-  // дата релиза (в российском формате)
-  // издатель
-  // разработчик
-  // жанр
-  // картинка/постер
-  // карусель скриншотов
-  // системные требования
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  
   return (
     <>
       <Spin spinning={isLoading} />
@@ -78,14 +92,12 @@ const GamePage = () => {
         <li>{currentGame.genre}</li>
       </ul>
       <p>минимальные системные требования:</p>
-      <ul>
-        {/* {Object.entries(currentGame.minimum_system_requirements).map(arr => (
-          <li>
-            {arr[0]}: {arr[1]}
-          </li>
-        ))} */}
-      </ul>
+      <p>к сожалению, мы сейчас не можем предоставить системные требования</p>
+      {/* не получилось получить доступ к системным требованиям */}
       <p>{currentGame.description}</p>
+      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <p>К сожалению произвести запрос на серевер не удалось, попробуйте позже</p>
+      </Modal>
     </>
   )
 }

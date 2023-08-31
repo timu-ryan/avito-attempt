@@ -1,22 +1,21 @@
-import './App.css';
-import api from '../api';
+import api from '../utils/api';
 import { useState, useEffect } from 'react';
-import { Row, Col, Card } from 'antd';
 import { Layout } from 'antd';
 import { Spin } from 'antd';
+import { Navigate } from 'react-router-dom';
 
 import SelectForm from './SelectForm';
 import { Routes, Route } from 'react-router-dom';
 import GamePage from './GamePage';
-import { Link } from 'react-router-dom';
+import GamesSection from './GamesSection';
+import { Modal } from 'antd';
 
 function App() {
   const [cardList, setCardList] = useState([])
-  const { Meta } = Card;
-  const {Header, Content, Footer} = Layout;
-
-  // const [currentGame, setCurrentGame] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const {Header, Content, Footer} = Layout;
 
   useEffect(() => {
     setIsLoading(true)
@@ -35,67 +34,41 @@ function App() {
       .then(res => {
         setCardList(res)
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err);
+        setIsModalOpen(true);
+      })
       .finally(setIsLoading(false))
   }
 
-  // const handleCardClick = (e) => {
-  //   // api.getSpecificGame(42)
-  //   //   .then(res => console.log(res))
-  //   console.log(e.target.parentNode.parentNode.parentNode)
-  // }
-  // handleCardClick();
-  const headerStyle = {
-    textAlign: 'center',
-    color: '#fff',
-    height: 64,
-    paddingInline: 50,
-    lineHeight: '64px',
-    backgroundColor: '#7dbcea',
+  const handleOk = () => {
+    setIsModalOpen(false);
   };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="App">
-
-      <Layout>
-        <Header style={headerStyle}>freetogame</Header>
+      <Layout style={{minHeight: "100vh"}}>
+        <Header className='header'>freetogame</Header>
         <Routes>
           <Route path="/" element={
             <Content>
               <Spin spinning={isLoading} />
               <SelectForm onSearch={handleSearchSubmit} />
-              <Row gutter={[16, { xs: 8, sm: 16, md: 24, lg: 32 }]} justify="space-evenly">
-                {cardList.length 
-                  ? cardList.map(card => {
-                    return (
-                      <Col span={{ xs: 24, sm: 12, md: 8, lg: 8 }} key={card.id}>
-                        <Link to={`games/${card.id}`}>
-                          <Card
-                            hoverable
-                            style={{
-                              width: 300,
-                              height: 350,
-                            }}
-                            cover={<img alt={card.title} src={card.thumbnail} />}
-                          >
-                            <Meta title={card.title} />
-                            <p>{card.release_date}</p>
-                            <p>{card.genre}</p>
-                            <p>{card.publisher}</p>
-                          </Card>
-                        </Link>
-                      </Col>
-                    )
-                  })
-                  : 'No results available at the moment, please try again later.'}
-              </Row>
+              <GamesSection cardList={cardList} />
+              <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <p>К сожалению произвести запрос на серевер не удалось, попробуйте позже</p>
+              </Modal>
             </Content>} />
           <Route path="/games/:id" element={<GamePage />}/>  
-          {/* <Route path="/game/2" element={<Game serverData={serverData}/>}/>   */}
+          <Route path="*" element={<Navigate to="/" replace/>}/>
         </Routes>
         
         <Footer>Благодарим FreeToGame.com за предоставленное API</Footer>
       </Layout>
-      
     </div>
   );
 }

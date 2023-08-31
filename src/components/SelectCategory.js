@@ -15,24 +15,11 @@ const SelectCategory = ({handleChange}) => {
     "tower-defense", "horror", "mmorts"
   ];
   const { Option } = Select;
-  // const handleSelectedCategoriesChange = (value) => {
-  //   console.log(`selected ${value}`);
-  //   setSelectedCategories(value);
-  // };  
-
-  // const handleChange = (e) => {
-  //   onChange();
-  // }
 
   return (
     <Select
       allowClear="true"
-      // mode="multiple"
-      style={{
-        width: '30%',
-      }}
       placeholder="select category"
-      // defaultValue={['china']}
       onChange={handleChange}
       optionLabelProp="label"
     >
